@@ -1,0 +1,34 @@
+Generated with the built-in image_gen tool. Transparent PNG app icon concepts.
+
+icon-1.png
+Use case: stylized-concept.
+Asset type: a single finished macOS app icon for WCast, a utility that streams individual application windows between Macs so they behave like local apps.
+Output: exactly 1024x1024 PNG; one icon, no grid, no presentation mockup.
+Style: macOS Tahoe-inspired sculpted squircle, restrained liquid glass, exceptionally polished dimensional native macOS icon. A large centered continuous-corner squircle tile occupies about 88% of the square canvas, viewed straight-on. Transparent canvas outside the squircle. Crisp silhouette, subtle bevels, soft internal shadows and optical refraction, balanced negative space, legible at Dock size.
+Constraints: no text, no letters, no numbers, no watermark, no logo, no photoreal computers, no extra badges. Keep all foreground objects inside the squircle.
+Primary request: a luminous light silver-white application window leaving a graphite tile, with a teal light trail expressing seamless window streaming. The graphite squircle is the icon's backing tile. A single simple frosted window with a shallow title bar and three tiny neutral control dots lifts diagonally toward the upper right from its surface; a smooth translucent teal ribbon trails behind into the tile, suggesting motion and continuity. Strong contrast between the pale glass window, charcoal graphite, and luminous teal. Sparse, precise, premium, no busy UI inside the window.
+
+icon-2.png
+Use case: stylized-concept.
+Asset type: a single finished macOS app icon for WCast, a utility that streams individual application windows between Macs so they behave like local apps.
+Output: exactly 1024x1024 PNG; one icon, no grid, no presentation mockup.
+Style: macOS Tahoe-inspired sculpted squircle, restrained liquid glass, exceptionally polished dimensional native macOS icon. A large centered continuous-corner squircle tile occupies about 88% of the square canvas, viewed straight-on. Transparent canvas outside the squircle. Crisp silhouette, subtle bevels, soft internal shadows and optical refraction, balanced negative space, legible at Dock size.
+Constraints: no text, no letters, no numbers, no watermark, no logo, no photoreal computers, no extra badges. Keep all foreground objects inside the squircle.
+Primary request: a single frosted silver application window passing through a glowing teal ring. The backing squircle is dark graphite with deep teal shading. A thick elegant glass ring stands at a slight angle through the center, and the window visibly intersects its opening, one portion behind the ring and one portion emerging in front. Use convincing occlusion and gentle teal refraction to communicate crossing between machines. The ring glows softly, not science-fiction neon. Window has only a shallow title bar and three tiny neutral dots, no UI text. Restrained, sculptural, unmistakable at small sizes.
+
+icon-3.png
+Use case: stylized-concept.
+Asset type: a single finished macOS app icon for WCast, a utility that streams individual application windows between Macs so they behave like local apps.
+Output: exactly 1024x1024 PNG; one icon, no grid, no presentation mockup.
+Style: macOS Tahoe-inspired sculpted squircle, restrained liquid glass, exceptionally polished dimensional native macOS icon. A large centered continuous-corner squircle tile occupies about 88% of the square canvas, viewed straight-on. Transparent canvas outside the squircle. Crisp silhouette, subtle bevels, soft internal shadows and optical refraction, balanced negative space, legible at Dock size.
+Constraints: no text, no letters, no numbers, no watermark, no logo, no photoreal computers, no extra badges. Keep all foreground objects inside the squircle.
+Primary request: three stacked frosted application panes in deep teal. A rich deep-teal squircle backing supports three broad rounded glass windows, offset diagonally with clear depth; front pane is pale sea-glass silver, the middle pane saturated teal, the rear pane darker teal. Subtle glass translucency and luminous edges communicate remote windows becoming local. Each pane has an extremely simple title bar, no content or text. Compact sculptural stack, calm coherent geometry, beautiful soft highlights, no ring and no motion trail.
+
+icon-4.png
+Use case: stylized-concept.
+Asset type: a single finished macOS app icon for WCast, a utility that streams individual application windows between Macs so they behave like local apps.
+Output: exactly 1024x1024 PNG; one icon, no grid, no presentation mockup.
+Style: macOS Tahoe-inspired sculpted squircle, restrained liquid glass, exceptionally polished dimensional native macOS icon. A large centered continuous-corner squircle tile occupies about 88% of the square canvas, viewed straight-on. Transparent canvas outside the squircle. Crisp silhouette, subtle bevels, soft internal shadows and optical refraction, balanced negative space, legible at Dock size.
+Constraints: no text, no letters, no numbers, no watermark, no logo, no photoreal computers, no extra badges. Keep all foreground objects inside the squircle.
+Primary request: an original icon concept called the seamless handoff. Two compact offset graphite and deep-teal rounded rectangular host tiles sit diagonally within the graphite squircle backing, with one bright silver frosted application window bridging them. One half of this single continuous window is subtly translucent teal above the source tile, and the other half becomes luminous frosted silver above the destination tile, joined perfectly with no seam. The overlapping host tiles remain abstract, not computer hardware. A fine curved teal light connection underneath reinforces continuity without an arrow. One iconic flowing gesture, minimal objects and generous negative space. Tiny neutral title-bar dots only, no text.
+

@@ -1,0 +1,106 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Pushing a tag vX.Y.Z builds Wisp X.Y.Z, signs it with the Developer ID, notarizes app and DMG,
+# writes the signed Sparkle appcast, and creates a DRAFT GitHub release with all of it. Publishing
+# the draft (by hand, after a look) is what ships it: the app's update feed is
+# releases/latest/download/appcast.xml, and drafts are never "latest".
+#
+# The secrets (scripts/setup-release-secrets.sh sets them; docs/development.md has the details):
+#   DEVELOPER_ID_P12          base64 of the "Developer ID Application" certificate and key (.p12)
+#   DEVELOPER_ID_P12_PASSWORD the .p12's password
+#   NOTARY_APPLE_ID, NOTARY_TEAM_ID, NOTARY_PASSWORD   Apple ID, team, app-specific password
+#   SPARKLE_PRIVATE_KEY       the EdDSA update key (generate_keys -x), matching BRAND_SPARKLE_PUBLIC_KEY
+name: Release
+
+# Manual for now: GitHub's Mac runners have Xcode 26 at most, and releases are built with Xcode 27
+# (the macOS 27 SDK; AppKit's window chrome follows the SDK an app is built with). Until they have
+# it, releases are built locally: scripts/release.sh --draft (docs/development.md, "Releasing").
+# Run this by hand on a tag: gh workflow run release.yml --ref v<version>. When the runners have
+# Xcode 27, restore the trigger to: push: tags: ["v*"].
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write # to create the draft release
+
+concurrency:
+  group: release-${{ github.ref }}
+
+jobs:
+  release:
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag, the version and the secrets
+        env:
+          P12: ${{ secrets.DEVELOPER_ID_P12 }}
+          NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
+          NOTARY_TEAM_ID: ${{ secrets.NOTARY_TEAM_ID }}
+          NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+        run: |
+          . scripts/brand.env
+          [ "$TAG" = "v$BRAND_VERSION" ] || { echo "::error::tag $TAG but scripts/brand.env says $BRAND_VERSION"; exit 1; }
+          grep -q "^## $BRAND_VERSION " CHANGELOG.md || { echo "::error::CHANGELOG.md has no '## $BRAND_VERSION' section"; exit 1; }
+          [ -n "$BRAND_SPARKLE_PUBLIC_KEY" ] || { echo "::error::BRAND_SPARKLE_PUBLIC_KEY is empty in scripts/brand.env"; exit 1; }
+          for s in P12 NOTARY_APPLE_ID NOTARY_TEAM_ID NOTARY_PASSWORD SPARKLE_PRIVATE_KEY; do
+            [ -n "${!s}" ] || { echo "::error::secret for $s is not set (scripts/setup-release-secrets.sh)"; exit 1; }
+          done
+          # The shapes only, never the values: a stray space or newline makes Apple's server answer 400.
+          bad=0
+          [[ "$NOTARY_APPLE_ID" =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]] || { echo "::error::NOTARY_APPLE_ID isn't a plain email address (spaces or newlines?)"; bad=1; }
+          [[ "$NOTARY_TEAM_ID" =~ ^[A-Z0-9]{10}$ ]] || { echo "::error::NOTARY_TEAM_ID isn't 10 capital letters and digits"; bad=1; }
+          [[ "$NOTARY_PASSWORD" =~ ^[a-z]{4}-[a-z]{4}-[a-z]{4}-[a-z]{4}$ ]] || { echo "::error::NOTARY_PASSWORD isn't an app-specific password (xxxx-xxxx-xxxx-xxxx)"; bad=1; }
+          [ "$bad" = 0 ] || exit 1
+          echo "VERSION=$BRAND_VERSION" >> "$GITHUB_ENV"
+          # The newest Xcode on the runner (the code needs the macOS 26 SDK or later).
+          ls -d /Applications/Xcode*.app
+          XCODE="$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+          sudo xcode-select -s "$XCODE"
+          MAJOR="$(xcodebuild -version | sed -nE 's/^Xcode ([0-9]+).*/\1/p')"
+          [ "$MAJOR" -ge 27 ] || { echo "::error::newest Xcode here is $MAJOR; releases need Xcode 27 (build locally: scripts/release.sh --draft)"; exit 1; }
+          xcodebuild -version; swift --version
+
+      - name: Signing keychain
+        env:
+          P12: ${{ secrets.DEVELOPER_ID_P12 }}
+          P12_PASSWORD: ${{ secrets.DEVELOPER_ID_P12_PASSWORD }}
+          NOTARY_APPLE_ID: ${{ secrets.NOTARY_APPLE_ID }}
+          NOTARY_TEAM_ID: ${{ secrets.NOTARY_TEAM_ID }}
+          NOTARY_PASSWORD: ${{ secrets.NOTARY_PASSWORD }}
+        run: |
+          KC="$RUNNER_TEMP/release.keychain-db"
+          KC_PASSWORD="$(openssl rand -hex 24)"
+          security create-keychain -p "$KC_PASSWORD" "$KC"
+          security set-keychain-settings -lut 3600 "$KC"
+          security unlock-keychain -p "$KC_PASSWORD" "$KC"
+          echo "$P12" | base64 --decode > "$RUNNER_TEMP/id.p12"
+          security import "$RUNNER_TEMP/id.p12" -k "$KC" -P "$P12_PASSWORD" -T /usr/bin/codesign
+          rm -f "$RUNNER_TEMP/id.p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KC_PASSWORD" "$KC" >/dev/null
+          security list-keychains -d user -s "$KC" $(security list-keychains -d user | tr -d '"')
+          IDENTITY="$(security find-identity -v -p codesigning "$KC" | sed -nE 's/.*"(Developer ID Application: [^"]+)".*/\1/p' | head -1)"
+          [ -n "$IDENTITY" ] || { echo "::error::no Developer ID Application identity in the .p12"; exit 1; }
+          xcrun notarytool store-credentials wisp-notary --apple-id "$NOTARY_APPLE_ID" --team-id "$NOTARY_TEAM_ID" \
+            --password "$NOTARY_PASSWORD" --keychain "$KC"
+          {
+            echo "BRAND_SIGN_IDENTITY=$IDENTITY"
+            echo "BRAND_NOTARY_PROFILE=wisp-notary"
+            echo "BRAND_NOTARY_KEYCHAIN=$KC"
+          } >> "$GITHUB_ENV"
+
+      - name: Build, sign, notarize
+        run: scripts/release.sh
+
+      - name: Appcast, release notes, draft release
+        env:
+          SPARKLE_PRIVATE_KEY: ${{ secrets.SPARKLE_PRIVATE_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/draft-release.sh
+
+      - name: Remove the keychain
+        if: always()
+        run: security delete-keychain "$RUNNER_TEMP/release.keychain-db" 2>/dev/null || true

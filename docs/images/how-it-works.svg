@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t d">
+<title id="t">How Wisp works</title>
+<desc id="d">On the host Mac each shared window is put on a virtual display, captured with ScreenCaptureKit, encoded with the hardware HEVC encoder and sent as paced UDP packets over Tailscale. On your Mac it is reassembled, decoded and shown in a native window that belongs to a phantom app with its own Dock icon and menu bar. Mouse, keys, resizes and menu choices go back over TCP and are injected on the host.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stop-color="#2C3038"/><stop offset="1" stop-color="#16191E"/></linearGradient>
+  <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.07"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0.03"/></linearGradient>
+  <linearGradient id="pipe" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2BD4C0" stop-opacity="0.05"/><stop offset="0.5" stop-color="#2BD4C0" stop-opacity="0.16"/><stop offset="1" stop-color="#2BD4C0" stop-opacity="0.05"/></linearGradient>
+  <marker id="arT" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2BD4C0"/></marker>
+  <marker id="arW" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#C9D1D9"/></marker>
+  <filter id="glow" x="-20%" y="-200%" width="140%" height="500%"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<rect width="1280" height="640" rx="24" fill="url(#bg)"/>
+<rect x="0.5" y="0.5" width="1279" height="639" rx="23.5" fill="none" stroke="#fff" stroke-opacity="0.1"/>
+<g font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="40" y="40" width="430" height="500" rx="20" fill="url(#panel)" stroke="#fff" stroke-opacity="0.12"/>
+<text x="70" y="84" font-size="24" font-weight="700" fill="#fff">The other Mac</text>
+<text x="70" y="110" font-size="15" fill="#9AA4AE">sharing: the host</text>
+<rect x="810" y="40" width="430" height="500" rx="20" fill="url(#panel)" stroke="#fff" stroke-opacity="0.12"/>
+<text x="840" y="84" font-size="24" font-weight="700" fill="#fff">Your Mac</text>
+<text x="840" y="110" font-size="15" fill="#9AA4AE">viewing</text>
+<rect x="70" y="140" width="370" height="72" rx="14" fill="#0F1216" fill-opacity="0.55" stroke="#2BD4C0" stroke-opacity="0.8"/>
+<circle cx="104" cy="176" r="15" fill="#2BD4C0" fill-opacity="0.16" stroke="#2BD4C0" stroke-opacity="0.7"/>
+<text x="104" y="181" font-size="14" font-weight="700" fill="#B8FFF4" text-anchor="middle">1</text>
+<text x="132" y="171" font-size="18" font-weight="600" fill="#F2F5F7">The app’s window</text>
+<text x="132" y="194" font-size="14" fill="#9AA4AE">on a HiDPI virtual display of its own</text>
+<rect x="70" y="236" width="370" height="72" rx="14" fill="#0F1216" fill-opacity="0.55" stroke="#FFFFFF" stroke-opacity="0.14"/>
+<circle cx="104" cy="272" r="15" fill="#2BD4C0" fill-opacity="0.16" stroke="#2BD4C0" stroke-opacity="0.7"/>
+<text x="104" y="277" font-size="14" font-weight="700" fill="#B8FFF4" text-anchor="middle">2</text>
+<text x="132" y="267" font-size="18" font-weight="600" fill="#F2F5F7">Capture</text>
+<text x="132" y="290" font-size="14" fill="#9AA4AE">ScreenCaptureKit, just that window</text>
+<rect x="70" y="332" width="370" height="72" rx="14" fill="#0F1216" fill-opacity="0.55" stroke="#FFFFFF" stroke-opacity="0.14"/>
+<circle cx="104" cy="368" r="15" fill="#2BD4C0" fill-opacity="0.16" stroke="#2BD4C0" stroke-opacity="0.7"/>
+<text x="104" y="373" font-size="14" font-weight="700" fill="#B8FFF4" text-anchor="middle">3</text>
+<text x="132" y="363" font-size="18" font-weight="600" fill="#F2F5F7">Encode</text>
+<text x="132" y="386" font-size="14" fill="#9AA4AE">hardware HEVC, low-latency mode</text>
+<rect x="70" y="428" width="370" height="72" rx="14" fill="#0F1216" fill-opacity="0.55" stroke="#FFFFFF" stroke-opacity="0.14"/>
+<circle cx="104" cy="464" r="15" fill="#2BD4C0" fill-opacity="0.16" stroke="#2BD4C0" stroke-opacity="0.7"/>
+<text x="104" y="469" font-size="14" font-weight="700" fill="#B8FFF4" text-anchor="middle">4</text>
+<text x="132" y="459" font-size="18" font-weight="600" fill="#F2F5F7">Send</text>
+<text x="132" y="482" font-size="14" fill="#9AA4AE">paced UDP packets + error correction</text>
+<rect x="840" y="140" width="370" height="72" rx="14" fill="#0F1216" fill-opacity="0.55" stroke="#2BD4C0" stroke-opacity="0.8"/>
+<circle cx="874" cy="176" r="15" fill="#2BD4C0" fill-opacity="0.16" stroke="#2BD4C0" stroke-opacity="0.7"/>
+<text x="874" y="181" font-size="14" font-weight="700" fill="#B8FFF4" text-anchor="middle">8</text>
+<text x="902" y="171" font-size="18" font-weight="600" fill="#F2F5F7">A phantom app</text>
+<text x="902" y="194" font-size="14" fill="#9AA4AE">its own Dock icon, ⌘Tab and menu bar</text>
+<rect x="840" y="236" width="370" height="72" rx="14" fill="#0F1216" fill-opacity="0.55" stroke="#FFFFFF" stroke-opacity="0.14"/>
+<circle cx="874" cy="272" r="15" fill="#2BD4C0" fill-opacity="0.16" stroke="#2BD4C0" stroke-opacity="0.7"/>
+<text x="874" y="277" font-size="14" font-weight="700" fill="#B8FFF4" text-anchor="middle">7</text>
+<text x="902" y="267" font-size="18" font-weight="600" fill="#F2F5F7">A native window</text>
+<text x="902" y="290" font-size="14" fill="#9AA4AE">traffic lights, two-way resize, teal outline</text>
+<rect x="840" y="332" width="370" height="72" rx="14" fill="#0F1216" fill-opacity="0.55" stroke="#FFFFFF" stroke-opacity="0.14"/>
+<circle cx="874" cy="368" r="15" fill="#2BD4C0" fill-opacity="0.16" stroke="#2BD4C0" stroke-opacity="0.7"/>
+<text x="874" y="373" font-size="14" font-weight="700" fill="#B8FFF4" text-anchor="middle">6</text>
+<text x="902" y="363" font-size="18" font-weight="600" fill="#F2F5F7">Decode</text>
+<text x="902" y="386" font-size="14" fill="#9AA4AE">hardware HEVC</text>
+<rect x="840" y="428" width="370" height="72" rx="14" fill="#0F1216" fill-opacity="0.55" stroke="#FFFFFF" stroke-opacity="0.14"/>
+<circle cx="874" cy="464" r="15" fill="#2BD4C0" fill-opacity="0.16" stroke="#2BD4C0" stroke-opacity="0.7"/>
+<text x="874" y="469" font-size="14" font-weight="700" fill="#B8FFF4" text-anchor="middle">5</text>
+<text x="902" y="459" font-size="18" font-weight="600" fill="#F2F5F7">Receive</text>
+<text x="902" y="482" font-size="14" fill="#9AA4AE">reassemble, re-request what was lost</text>
+<line x1="255" y1="214" x2="255" y2="234" stroke="#2BD4C0" stroke-width="2.5" marker-end="url(#arT)"/>
+<line x1="1025" y1="234" x2="1025" y2="214" stroke="#2BD4C0" stroke-width="2.5" marker-end="url(#arT)"/>
+<line x1="255" y1="310" x2="255" y2="330" stroke="#2BD4C0" stroke-width="2.5" marker-end="url(#arT)"/>
+<line x1="1025" y1="330" x2="1025" y2="310" stroke="#2BD4C0" stroke-width="2.5" marker-end="url(#arT)"/>
+<line x1="255" y1="406" x2="255" y2="426" stroke="#2BD4C0" stroke-width="2.5" marker-end="url(#arT)"/>
+<line x1="1025" y1="426" x2="1025" y2="406" stroke="#2BD4C0" stroke-width="2.5" marker-end="url(#arT)"/>
+<rect x="440" y="116" width="400" height="408" rx="30" fill="url(#pipe)" stroke="#2BD4C0" stroke-opacity="0.35" stroke-dasharray="6 6"/>
+<text x="640" y="300" font-size="20" font-weight="700" fill="#D4F5F0" text-anchor="middle">Tailscale</text>
+<text x="640" y="324" font-size="14" fill="#9AA4AE" text-anchor="middle">WireGuard-encrypted;</text>
+<text x="640" y="343" font-size="14" fill="#9AA4AE" text-anchor="middle">identity and access</text>
+<text x="640" y="362" font-size="14" fill="#9AA4AE" text-anchor="middle">from your tailnet</text>
+<line x1="440" y1="464" x2="836" y2="464" stroke="#2BD4C0" stroke-width="10" opacity="0.5" filter="url(#glow)"/>
+<line x1="440" y1="464" x2="834" y2="464" stroke="#2BD4C0" stroke-width="3" marker-end="url(#arT)"/>
+<text x="640" y="450" font-size="15" font-weight="600" fill="#B8FFF4" text-anchor="middle">video · UDP 7879</text>
+<text x="640" y="492" font-size="13" fill="#9AA4AE" text-anchor="middle">only changed frames; bitrate adapts to loss</text>
+<line x1="838" y1="176" x2="444" y2="176" stroke="#C9D1D9" stroke-width="3" marker-end="url(#arW)"/>
+<text x="640" y="162" font-size="15" font-weight="600" fill="#E6EBEF" text-anchor="middle">input · TCP 7878</text>
+<text x="640" y="204" font-size="13" fill="#9AA4AE" text-anchor="middle">mouse, keys, scroll, resize, menus, clipboard</text>
+<text x="640" y="588" font-size="16" fill="#C9D1D9" text-anchor="middle">Up to 3 windows at once, each its own stream. Typically 15–20 ms from the host’s screen to yours on a fast link.</text>
+</g></svg>

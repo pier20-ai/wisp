@@ -1,0 +1,10 @@
+.build/
+dist/
+.swiftpm/
+*.xcodeproj/
+xcuserdata/
+.DS_Store
+# per-machine signing settings (see scripts/brand.env)
+scripts/brand.local.env
+soak-results/
+/icon-*.png
